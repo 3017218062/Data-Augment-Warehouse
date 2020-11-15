@@ -1,4 +1,4 @@
-import cv2
+import cv2, random
 import numpy as np
 
 
@@ -52,22 +52,22 @@ class RandAugment(object):
         return img
 
     def shearX(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         M = np.array([[1, -m, 0], [0, 1, 0]])
         return cv2.warpAffine(img, M, (self.w, self.h))
 
     def shearY(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         M = np.array([[1, 0, 0], [-m, 1, 0]])
         return cv2.warpAffine(img, M, (self.w, self.h))
 
     def translateX(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         M = np.array([[1, 0, -m * self.w], [0, 1, 0]])
         return cv2.warpAffine(img, M, (self.w, self.h))
 
     def translateY(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         M = np.array([[1, 0, 0], [0, 1, -m * self.h]])
         return cv2.warpAffine(img, M, (self.w, self.h))
 
@@ -76,7 +76,7 @@ class RandAugment(object):
         return cv2.warpAffine(img, M, (self.w, self.h))
 
     def color(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         _img = cv2.cvtColor(cv2.cvtColor(img, cv2.COLOR_RGB2GRAY), cv2.COLOR_GRAY2RGB)
         img = img * (1. + m) - _img * m + 1e-9
 
@@ -98,7 +98,7 @@ class RandAugment(object):
         return table[img].astype(np.uint8, copy=False)
 
     def contrast(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         mean = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY).mean()
         img = img * (1. + m) - int(mean + 0.5) * m + 1e-9
 
@@ -107,7 +107,7 @@ class RandAugment(object):
         return img.astype(np.uint8, copy=False)
 
     def sharpness(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         img = img.astype(np.float, copy=False)
         filter = np.array([[1., 1., 1.], [1., 5., 1.], [1., 1., 1.]]) / 13.
         _img = cv2.filter2D(img, -1, filter)
@@ -123,7 +123,7 @@ class RandAugment(object):
         return img.astype(np.uint8, copy=False)
 
     def brightness(self, img, m):
-        m *= np.random.choice([-1, 1], 1)[0]
+        m *= random.choice([-1, 1])
         _img = np.ones(m.shape, dtype=np.float)
         img = img * (1. + m) - _img * m + 1e-9
 
