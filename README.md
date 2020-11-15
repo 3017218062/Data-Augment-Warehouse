@@ -50,3 +50,36 @@ image = augment.shearY(image, 0.2)
     ```
 
   - self.functions中加入new_func。
+
+# MixUp
+
+- 论文地址：https://arxiv.org/pdf/1710.09412.pdf
+
+- 开源代码github地址：https://github.com/facebookresearch/mixup-cifar10
+
+- **MixUp**是最先提出的图像混叠增广方案，其原理简单、方便实现，不仅在图像分类上，在目标检测上也取得了不错的效果。为了便于实现，通常只对一个batch内的数据进行混叠，在 **CutMix**中也是如此。
+
+- 采用插值的思想：
+
+  ![](./images/MixUp公式.png)
+
+## 测试使用
+
+```python
+images, labels = [], []
+for i in os.listdir(path1):
+    images.append(cv2.resize(cv2.imread(path1 + i, flags=1)[:, :, [2, 1, 0]], (224, 224)))
+    labels.append(np.array([1, 0]))
+for i in os.listdir(path2):
+    images.append(cv2.resize(cv2.imread(path2 + i, flags=1)[:, :, [2, 1, 0]], (224, 224)))
+    labels.append(np.array([0, 1]))
+images = np.asarray(images, dtype=np.float) / 255.
+labels = np.asarray(labels, dtype=np.float)
+
+augment = MixUp()
+images, labels = augment(images, labels)
+```
+
+![](./images/MixUp1.png)
+
+![](./images/MixUp2.png)
