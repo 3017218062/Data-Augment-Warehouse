@@ -83,3 +83,36 @@ images, labels = augment(images, labels)
 ![](./images/MixUp1.png)
 
 ![](./images/MixUp2.png)
+
+# CutMix
+
+- 论文地址：https://arxiv.org/pdf/1905.04899v2.pdf
+
+- 开源代码github地址：https://github.com/clovaai/CutMix-PyTorch
+
+- 与**MixUp**直接对两幅图进行相加不一样，**CutMix**是从一幅图中随机裁剪出一个ROI，然后覆盖当前图像中对应的区域。
+
+- 采用拼接的思想：
+
+  ![](./images/CutMix公式.png)
+
+## 测试使用
+
+```python
+images, labels = [], []
+for i in os.listdir(path1):
+    images.append(cv2.resize(cv2.imread(path1 + i, flags=1)[:, :, [2, 1, 0]], (224, 224)))
+    labels.append(np.array([1, 0]))
+for i in os.listdir(path2):
+    images.append(cv2.resize(cv2.imread(path2 + i, flags=1)[:, :, [2, 1, 0]], (224, 224)))
+    labels.append(np.array([0, 1]))
+images = np.asarray(images, dtype=np.float) / 255.
+labels = np.asarray(labels, dtype=np.float)
+
+augment = CutMix()
+images, labels = augment(images, labels)
+```
+
+![](./images/CutMix1.png)
+
+![](./images/CutMix2.png)
