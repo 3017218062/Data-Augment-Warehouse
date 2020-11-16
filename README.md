@@ -14,7 +14,6 @@
 ![](./images/原图.png)
 
 ```python
-np.random.seed(2020)
 image = cv2.imread(filename, flags=1)[:, :, [2, 1, 0]]
 augment = RandAugment(size=image.shape[:-1], number=3)
 image = augment(image)
@@ -23,7 +22,6 @@ image = augment(image)
 ![](./images/RandAugment1.png)
 
 ```python
-np.random.seed(2020)
 image = cv2.imread(filename, flags=1)[:, :, [2, 1, 0]]
 augment = RandAugment(size=image.shape[:-1], number=3)
 image = augment.shearY(image, 0.2)
@@ -50,6 +48,32 @@ image = augment.shearY(image, 0.2)
     ```
 
   - self.functions中加入new_func。
+
+# GridMask
+
+- 论文地址：https://arxiv.org/abs/2001.04086
+- 开源代码github地址：https://github.com/akuxcw/GridMask
+- 作者在论文中指出，此前存在的基于对图像crop的方法存在两个问题，如下图所示：
+  - 过度删除区域可能造成目标主体大部分甚至全部被删除，或者导致上下文信息的丢失，导致增广后的数据成为噪声数据；
+  - 保留过多的区域，对目标主体及上下文基本产生不了什么影响，失去增广的意义。
+- 因此如果避免过度删除或过度保留成为需要解决的核心问题。
+- **GridMask**是通过生成一个与原图分辨率相同的掩码，并将掩码进行随机翻转，与原图相乘，从而得到增广后的图像，通过超参数控制生成的掩码网格的大小。
+- 在训练过程中，有两种以下使用方法：
+  - 设置一个概率p，从训练开始就对图片以概率p使用**GridMask**进行增广。
+  - 一开始设置增广概率为0，随着迭代轮数增加，对训练图片进行**GridMask**增广的概率逐渐增大，最后变为p。
+- 论文中验证上述第二种方法的训练效果更好一些。
+
+## 测试使用
+
+```python
+image = cv2.imread(filename, flags=1)[:, :, [2, 1, 0]]
+augment = GridMask()
+image = augment(image)
+```
+
+![](./images/GridMask1.png)
+
+![](./images/GridMask2.png)
 
 # MixUp
 
